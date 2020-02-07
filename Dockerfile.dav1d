@@ -27,14 +27,12 @@ ENV GCC_IGNORE_WERROR=1
 
 ARG LIBDAV1D_VERSION=0.5.2
 ARG LIBDAV1D_URL="https://code.videolan.org/videolan/dav1d/-/archive/$LIBDAV1D_VERSION/dav1d-$LIBDAV1D_VERSION.tar.gz"
-ARG LIBDAV1D_SHA256=34180d4c48f65785242c3062b2e098d4c9388b384a8480a5466eb4e452dc4af9
 
 RUN \
   wget -O dav1d.tar.gz "$LIBDAV1D_URL" && \
-  echo "$LIBDAV1D_SHA256  dav1d.tar.gz" | sha256sum --status -c - && \
   tar xfz dav1d.tar.gz && \
-  cd dav1d-* && \
-  meson builddir --prefix=/home/build --buildtype release && ninja -C builddir install
+  cd dav1d-$LIBDAV1D_VERSION && \
+  meson builddir --prefix=/home/build --buildtype plain && ninja -C builddir install
 
 FROM clearlinux:latest
 COPY --from=dav1d-build /home/build /
